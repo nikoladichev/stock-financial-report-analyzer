@@ -18,25 +18,13 @@ import java.net.URI;
 @Service
 public class AlphaVantageIntegrationService {
 
-    private RestTemplate restTemplate = null;
+    private RestTemplate restTemplate;
 
     @Value("${alpha.vantage.query.uri}")
     private String alphaVantageUriTemplate;
 
     public AlphaVantageIntegrationService(RestTemplateBuilder restTemplateBuilder) {
         this.restTemplate = restTemplateBuilder.build();
-//
-//        ObjectMapper mapper = new ObjectMapper();
-//        mapper.addMixIn(AlphaVantageReportItem.class, IncomeStatementReportItem.class);
-//        mapper.addMixIn(AlphaVantageReportItem.class, CashFlowReportItem.class);
-//        mapper.addMixIn(AlphaVantageReportItem.class, BalanceSheetReportItem.class);
-//
-//        List<HttpMessageConverter<?>> messageConverters = new ArrayList<>();
-//        MappingJackson2HttpMessageConverter jsonMessageConverter = new MappingJackson2HttpMessageConverter();
-//        jsonMessageConverter.setObjectMapper(mapper);
-//        messageConverters.add(jsonMessageConverter);
-//
-//        this.restTemplate.setMessageConverters(messageConverters);
     }
 
     public <R> R getAlphaVantageData(ReportType function, String ticker) {

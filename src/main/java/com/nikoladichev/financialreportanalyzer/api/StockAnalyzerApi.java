@@ -20,16 +20,16 @@ public class StockAnalyzerApi {
 
     @GetMapping("/{symbol}/income-statement")
     public IncomeStatementReport incomeStatement(@PathVariable("symbol") String symbol) {
-        return service.getFinancialStatement(ReportType.INCOME_STATEMENT, symbol);
+        return service.getIncomeStatementReport(symbol);
     }
 
     @GetMapping("/{symbol}/balance-sheet")
     public BalanceSheetReport balanceSheet(@PathVariable("symbol") String symbol) {
-        return service.getFinancialStatement(ReportType.BALANCE_SHEET, symbol);
+        return service.getBalanceSheetReport(symbol);
     }
 
     @GetMapping("/{symbol}/cash-flow")
     public CashFlowReport getForSymbol(@PathVariable("symbol") String symbol) {
-        return service.getFinancialStatement(ReportType.CASH_FLOW, symbol);
+        return service.getCashFlowReport(symbol);
     }
 }
