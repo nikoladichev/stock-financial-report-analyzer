@@ -6,14 +6,14 @@ import com.nikoladichev.financialreportanalyzer.integration.alphavantage.dto.fun
 import com.nikoladichev.financialreportanalyzer.integration.alphavantage.dto.fundamentals.CashFlowReport;
 import com.nikoladichev.financialreportanalyzer.integration.alphavantage.dto.fundamentals.IncomeStatementReport;
 import com.nikoladichev.financialreportanalyzer.integration.alphavantage.service.AlphaVantageIntegrationService;
-import com.nikoladichev.financialreportanalyzer.persistence.CashFlowReportEntity;
+import com.nikoladichev.financialreportanalyzer.model.common.FinancialStatement;
+import com.nikoladichev.financialreportanalyzer.model.common.FinancialStatementType;
+import com.nikoladichev.financialreportanalyzer.model.ratios.RatiosWrapper;
 import com.nikoladichev.financialreportanalyzer.persistence.repository.BalanceSheetReportRepository;
 import com.nikoladichev.financialreportanalyzer.persistence.repository.CashFlowReportRepository;
 import com.nikoladichev.financialreportanalyzer.persistence.repository.IncomeStatementReportRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -47,6 +47,15 @@ public class StockAnalyzerService {
                 .orElse(this.getFinancialStatement(ReportType.CASH_FLOW, symbol));
 
         return cashFlowRepository.saveOrUpdate(cashFlowReport);
+    }
+
+    public FinancialStatement getFinancialStatement(String symbol, FinancialStatementType type) {
+        return new FinancialStatement(
+                this.getIncomeStatementReport(symbol),
+                this.getBalanceSheetReport(symbol),
+                this.getCashFlowReport(symbol),
+                type
+        );
     }
 
     private <T extends AlphaVantageResponse> T getFinancialStatement(ReportType reportType, String ticker) {

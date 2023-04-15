@@ -38,10 +38,7 @@ public class AlphaVantageIntegrationService {
     private <R> R executeRequest(ReportType function, String ticker, Class<R> clazz) {
         UriTemplate uriTemplate = new UriTemplate(alphaVantageUriTemplate);
         URI uri = uriTemplate.expand(function.getValue(), ticker);
-
         ResponseEntity<R> response = restTemplate.exchange(uri, HttpMethod.GET, HttpEntity.EMPTY, clazz);
-
-        System.out.println(response);
 
         return response.getBody();
     }

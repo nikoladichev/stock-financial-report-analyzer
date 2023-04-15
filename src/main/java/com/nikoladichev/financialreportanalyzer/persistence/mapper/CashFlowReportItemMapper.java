@@ -11,6 +11,7 @@ import org.mapstruct.*;
         unmappedTargetPolicy = ReportingPolicy.IGNORE
 )
 public interface CashFlowReportItemMapper {
+    @Mapping(target = "fiscalDateEnding", source = "fiscalDateEnding")
     CashFlowReportItem entityToDto(CashFlowReportItemEntity entity);
 
     CashFlowReportItem mergeEntityToDto(CashFlowReportItemEntity entity, @MappingTarget CashFlowReportItem dto);

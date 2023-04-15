@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @Entity
 @NoArgsConstructor
@@ -16,6 +18,8 @@ public class IncomeStatementReportItemEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID, generator = "org.hibernate.id.UUIDGenerator")
     private String uuid;
+    private Date fiscalDateEnding;
+    private String reportedCurrency;
     private String grossProfit;
     private String totalRevenue;
     private String costOfRevenue;

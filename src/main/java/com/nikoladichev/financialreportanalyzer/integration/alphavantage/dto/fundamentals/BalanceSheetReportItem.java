@@ -1,6 +1,5 @@
 package com.nikoladichev.financialreportanalyzer.integration.alphavantage.dto.fundamentals;
 
-import com.fasterxml.jackson.annotation.JsonTypeName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -10,7 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@JsonTypeName("BalanceSheetReportItem")
 public class BalanceSheetReportItem extends AlphaVantageReportItem {
     private String totalAssets;
     private String totalCurrentAssets;
