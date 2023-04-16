@@ -3,6 +3,7 @@ package com.nikoladichev.financialreportanalyzer.controller;
 import com.nikoladichev.financialreportanalyzer.integration.alphavantage.dto.fundamentals.BalanceSheetReport;
 import com.nikoladichev.financialreportanalyzer.integration.alphavantage.dto.fundamentals.CashFlowReport;
 import com.nikoladichev.financialreportanalyzer.integration.alphavantage.dto.fundamentals.IncomeStatementReport;
+import com.nikoladichev.financialreportanalyzer.integration.alphavantage.dto.fundamentals.Overview;
 import com.nikoladichev.financialreportanalyzer.model.common.FinancialStatement;
 import com.nikoladichev.financialreportanalyzer.model.common.FinancialStatementType;
 import com.nikoladichev.financialreportanalyzer.service.StockAnalyzerService;
@@ -63,7 +64,13 @@ public class StockAnalyzerController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{symbol}/cash-flow")
-    public CashFlowReport getForSymbol(@PathVariable("symbol") String symbol) {
+    public CashFlowReport cashFlow(@PathVariable("symbol") String symbol) {
         return service.getCashFlowReport(symbol);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/{symbol}/overview")
+    public Overview overview(@PathVariable("symbol") String symbol) {
+        return service.getOverview(symbol);
     }
 }
