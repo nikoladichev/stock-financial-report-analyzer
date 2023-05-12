@@ -1,74 +1,82 @@
 package com.nikoladichev.financialreportanalyzer.service;
 
-import com.nikoladichev.financialreportanalyzer.integration.alphavantage.api.AlphaVantageFunctionType;
-import com.nikoladichev.financialreportanalyzer.integration.alphavantage.dto.AlphaVantageResponse;
-import com.nikoladichev.financialreportanalyzer.integration.alphavantage.dto.fundamentals.BalanceSheetReport;
-import com.nikoladichev.financialreportanalyzer.integration.alphavantage.dto.fundamentals.CashFlowReport;
-import com.nikoladichev.financialreportanalyzer.integration.alphavantage.dto.fundamentals.IncomeStatementReport;
-import com.nikoladichev.financialreportanalyzer.integration.alphavantage.dto.fundamentals.Overview;
-import com.nikoladichev.financialreportanalyzer.integration.alphavantage.service.AlphaVantageIntegrationService;
-import com.nikoladichev.financialreportanalyzer.model.common.FinancialStatement;
-import com.nikoladichev.financialreportanalyzer.model.common.FinancialStatementType;
-import com.nikoladichev.financialreportanalyzer.persistence.repository.BalanceSheetReportRepository;
-import com.nikoladichev.financialreportanalyzer.persistence.repository.CashFlowReportRepository;
-import com.nikoladichev.financialreportanalyzer.persistence.repository.IncomeStatementReportRepository;
-import com.nikoladichev.financialreportanalyzer.persistence.repository.OverviewRepository;
+import com.nikoladichev.financialreportanalyzer.integration.alphavantage.api.AVFunctionType;
+import com.nikoladichev.financialreportanalyzer.integration.alphavantage.dto.AVResponse;
+import com.nikoladichev.financialreportanalyzer.integration.alphavantage.dto.fundamentals.AVBalanceSheets;
+import com.nikoladichev.financialreportanalyzer.integration.alphavantage.dto.fundamentals.AVCashFlows;
+import com.nikoladichev.financialreportanalyzer.integration.alphavantage.dto.fundamentals.AVIncomeStatements;
+import com.nikoladichev.financialreportanalyzer.integration.alphavantage.dto.fundamentals.AVOverview;
+import com.nikoladichev.financialreportanalyzer.integration.alphavantage.dto.fundamentals.mapper.IncomeStatementsMapper;
+import com.nikoladichev.financialreportanalyzer.integration.alphavantage.persistence.repository.AVBalanceSheetsRepository;
+import com.nikoladichev.financialreportanalyzer.integration.alphavantage.persistence.repository.AVCashFlowsRepository;
+import com.nikoladichev.financialreportanalyzer.integration.alphavantage.persistence.repository.AVIncomeStatementsRepository;
+import com.nikoladichev.financialreportanalyzer.integration.alphavantage.persistence.repository.AVOverviewRepository;
+import com.nikoladichev.financialreportanalyzer.integration.alphavantage.service.AVIntegrationService;
+import com.nikoladichev.financialreportanalyzer.model.common.IncomeStatementCollection;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class StockAnalyzerService {
 
-    private final AlphaVantageIntegrationService alphaVantageService;
+    private final IncomeStatementsMapper incomeStatementsMapper;
 
-    private final IncomeStatementReportRepository incomeStatementRepository;
-    private final BalanceSheetReportRepository balanceSheetReportRepository;
-    private final CashFlowReportRepository cashFlowRepository;
-    private final OverviewRepository overviewRepository;
+    private final AVIntegrationService avIntegrationService;
+    private final AVIncomeStatementsRepository avIncomeStatementRepository;
+    private final AVBalanceSheetsRepository avBalanceSheetsRepository;
+    private final AVCashFlowsRepository avCashFlowRepository;
+    private final AVOverviewRepository avOverviewRepository;
 
-    public IncomeStatementReport getIncomeStatementReport(String symbol) {
-        IncomeStatementReport incomeStatementReport = this.incomeStatementRepository
+    public IncomeStatementCollection getIncomeStatementCollection(String symbol) {
+      // TODO - extract to Av...Service
+        AVIncomeStatements avIncomeStatements =
+                avIncomeStatementRepository.saveOrUpdate(
+                        this.avIncomeStatementRepository
                 .findBySymbol(symbol)
-                .orElse(this.getFinancialStatement(AlphaVantageFunctionType.INCOME_STATEMENT, symbol));
+                .orElse(this.getFinancialStatement(AVFunctionType.INCOME_STATEMENT, symbol)));
 
-        return incomeStatementRepository.saveOrUpdate(incomeStatementReport);
+        avIncomeStatements = avIncomeStatementRepository.saveOrUpdate(avIncomeStatements);
+
+        return incomeStatementsMapper.normalizeDto(avIncomeStatements);
     }
 
-    public BalanceSheetReport getBalanceSheetReport(String symbol) {
-        BalanceSheetReport balanceSheetReport = this.balanceSheetReportRepository
+    public AVBalanceSheets getBalanceSheetReport(String symbol) {
+        AVBalanceSheets AVBalanceSheets = this.avBalanceSheetsRepository
                 .findBySymbol(symbol)
-                .orElse(this.getFinancialStatement(AlphaVantageFunctionType.BALANCE_SHEET, symbol));
+                .orElse(this.getFinancialStatement(AVFunctionType.BALANCE_SHEET, symbol));
 
-        return balanceSheetReportRepository.saveOrUpdate(balanceSheetReport);
+        return avBalanceSheetsRepository.saveOrUpdate(AVBalanceSheets);
     }
 
-    public CashFlowReport getCashFlowReport(String symbol) {
-        CashFlowReport cashFlowReport = this.cashFlowRepository
+    public AVCashFlows getCashFlowReport(String symbol) {
+        AVCashFlows AVCashFlows = this.avCashFlowRepository
                 .findBySymbol(symbol)
-                .orElse(this.getFinancialStatement(AlphaVantageFunctionType.CASH_FLOW, symbol));
+                .orElse(this.getFinancialStatement(AVFunctionType.CASH_FLOW, symbol));
 
-        return cashFlowRepository.saveOrUpdate(cashFlowReport);
+        return avCashFlowRepository.saveOrUpdate(AVCashFlows);
     }
 
-    public Overview getOverview(String symbol) {
-        Overview cashFlowReport = this.overviewRepository
+    public AVOverview getOverview(String symbol) {
+        AVOverview cashFlowReport = this.avOverviewRepository
                 .findBySymbol(symbol)
-                .orElse(this.getFinancialStatement(AlphaVantageFunctionType.OVERVIEW, symbol));
+                .orElse(this.getFinancialStatement(AVFunctionType.OVERVIEW, symbol));
 
-        return overviewRepository.saveOrUpdate(cashFlowReport);
+        return avOverviewRepository.saveOrUpdate(cashFlowReport);
     }
 
-    public FinancialStatement getFinancialStatement(String symbol, FinancialStatementType type) {
-        return new FinancialStatement(
-                this.getIncomeStatementReport(symbol),
-                this.getBalanceSheetReport(symbol),
-                this.getCashFlowReport(symbol),
-                type
-        );
-    }
+//    public FinancialStatement getFinancialStatement(String symbol, FinancialStatementType type) {
+//        return new FinancialStatement(
+//                this.getIncomeStatementCollection(symbol),
+//                this.getBalanceSheetReport(symbol),
+//                this.getCashFlowReport(symbol),
+//                type
+//        );
+//    }
 
-    private <T extends AlphaVantageResponse> T getFinancialStatement(AlphaVantageFunctionType reportType, String ticker) {
-        return alphaVantageService.getAlphaVantageData(reportType, ticker);
+    private <T extends AVResponse> T getFinancialStatement(AVFunctionType reportType, String ticker) {
+        return avIntegrationService.getAlphaVantageData(reportType, ticker);
     }
 }

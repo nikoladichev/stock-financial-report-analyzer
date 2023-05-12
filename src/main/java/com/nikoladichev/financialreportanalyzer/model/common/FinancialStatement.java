@@ -1,13 +1,10 @@
 package com.nikoladichev.financialreportanalyzer.model.common;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.nikoladichev.financialreportanalyzer.integration.alphavantage.dto.fundamentals.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -19,25 +16,25 @@ public class FinancialStatement {
 
     private Map<String, FinancialStatementItem> financialStatement;
 
-    public FinancialStatement(IncomeStatementReport incomeStatementReport,
-                              BalanceSheetReport balanceSheetReport,
-                              CashFlowReport cashFlowReport,
+    public FinancialStatement(AVIncomeStatements AVIncomeStatements,
+                              AVBalanceSheets AVBalanceSheets,
+                              AVCashFlows AVCashFlows,
                               FinancialStatementType type) {
-        IncomeStatementReportItem[] incomeStatementRecords =
+        AVIncomeStatement[] incomeStatementRecords =
                 type == FinancialStatementType.QUARTERLY
-                        ? incomeStatementReport.getQuarterlyReports()
-                        : incomeStatementReport.getAnnualReports();
-        BalanceSheetReportItem[] balanceSheetReportItems =
+                        ? AVIncomeStatements.getQuarterlyReports()
+                        : AVIncomeStatements.getAnnualReports();
+        AVBalanceSheet[] balanceSheetReportItems =
                 type == FinancialStatementType.QUARTERLY
-                        ? balanceSheetReport.getQuarterlyReports()
-                        : balanceSheetReport.getAnnualReports();
-        CashFlowReportItem[] cashFlowReportItems =
+                        ? AVBalanceSheets.getQuarterlyReports()
+                        : AVBalanceSheets.getAnnualReports();
+        AVCashFlow[] cashFlowReportItems =
                 type == FinancialStatementType.QUARTERLY
-                        ? cashFlowReport.getQuarterlyReports()
-                        : cashFlowReport.getAnnualReports();
+                        ? AVCashFlows.getQuarterlyReports()
+                        : AVCashFlows.getAnnualReports();
 
         this.financialStatement = new LinkedHashMap<>();
-        for (IncomeStatementReportItem income : incomeStatementRecords) {
+        for (AVIncomeStatement income : incomeStatementRecords) {
             String date = sdf.format(income.getFiscalDateEnding());
             FinancialStatementItem financialStatement =
                     this.financialStatement.getOrDefault(date, new FinancialStatementItem());
@@ -46,7 +43,7 @@ public class FinancialStatement {
             this.financialStatement.put(date, financialStatement);
         }
 
-        for (BalanceSheetReportItem balance : balanceSheetReportItems) {
+        for (AVBalanceSheet balance : balanceSheetReportItems) {
             String date = sdf.format(balance.getFiscalDateEnding());
             FinancialStatementItem financialStatement =
                     this.financialStatement.getOrDefault(date, new FinancialStatementItem());
@@ -55,7 +52,7 @@ public class FinancialStatement {
             this.financialStatement.put(date, financialStatement);
         }
 
-        for (CashFlowReportItem cashFlow : cashFlowReportItems) {
+        for (AVCashFlow cashFlow : cashFlowReportItems) {
             String date = sdf.format(cashFlow.getFiscalDateEnding());
             FinancialStatementItem financialStatement =
                     this.financialStatement.getOrDefault(date, new FinancialStatementItem());

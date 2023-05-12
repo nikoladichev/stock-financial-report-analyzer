@@ -1,8 +1,8 @@
 package com.nikoladichev.financialreportanalyzer.model.common;
 
-import com.nikoladichev.financialreportanalyzer.integration.alphavantage.dto.fundamentals.BalanceSheetReportItem;
-import com.nikoladichev.financialreportanalyzer.integration.alphavantage.dto.fundamentals.CashFlowReportItem;
-import com.nikoladichev.financialreportanalyzer.integration.alphavantage.dto.fundamentals.IncomeStatementReportItem;
+import com.nikoladichev.financialreportanalyzer.integration.alphavantage.dto.fundamentals.AVBalanceSheet;
+import com.nikoladichev.financialreportanalyzer.integration.alphavantage.dto.fundamentals.AVCashFlow;
+import com.nikoladichev.financialreportanalyzer.integration.alphavantage.dto.fundamentals.AVIncomeStatement;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FinancialStatementItem {
-    private IncomeStatementReportItem incomeStatement;
-    private BalanceSheetReportItem balanceSheet;
-    private CashFlowReportItem cashFlow;
+    private AVIncomeStatement incomeStatement;
+    private AVBalanceSheet balanceSheet;
+    private AVCashFlow cashFlow;
 }
