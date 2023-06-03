@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.nikoladichev.financialreportanalyzer.model.common.DateFormatter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -14,6 +15,7 @@ public class ObjectMapperConfig {
   public ObjectMapper objectMapper() {
     return JsonMapper.builder()
         .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
+        .defaultDateFormat(DateFormatter.FORMATTER)
         .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
         .build();
   }
