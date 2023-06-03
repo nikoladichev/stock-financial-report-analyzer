@@ -1,14 +1,10 @@
 package com.nikoladichev.financialreportanalyzer.model.fundamentals.ratios;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.Map;
-import java.util.Objects;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.nikoladichev.financialreportanalyzer.model.common.Constants;
 import com.nikoladichev.financialreportanalyzer.model.common.DateFormatter;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
