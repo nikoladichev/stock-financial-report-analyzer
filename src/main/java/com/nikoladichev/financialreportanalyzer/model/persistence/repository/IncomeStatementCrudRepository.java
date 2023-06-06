@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface IncomeStatementCrudRepository extends JpaRepository<IncomeStatementEntity, String> {
-    List<IncomeStatementEntity> findAllBySymbolAndPeriodOrderByDateDesc(String symbol, String period);
+    List<IncomeStatementEntity> findAllBySymbolAndPeriod(String symbol, String period);
 
-    List<IncomeStatementEntity> findAllBySymbolOrderByDateDesc(String symbol);
+    List<IncomeStatementEntity> findAllBySymbol(String symbol);
 }

@@ -16,12 +16,12 @@ public class CashFlowStatementRepository {
   private final CashFlowStatementMapper mapper;
 
   public List<CashFlowStatement> findAllBySymbol(String symbol) {
-    List<CashFlowStatementEntity> incomeStatementEntities = crudRepository.findAllBySymbolOrderByDateDesc(symbol);
+    List<CashFlowStatementEntity> incomeStatementEntities = crudRepository.findAllBySymbol(symbol);
     return incomeStatementEntities.stream().map(mapper::entityToDto).collect(Collectors.toList());
   }
 
   public List<CashFlowStatement> findAllBySymbolAndPeriod(String symbol, String period) {
-    List<CashFlowStatementEntity> incomeStatementEntities = crudRepository.findAllBySymbolAndPeriodOrderByDateDesc(symbol, period);
+    List<CashFlowStatementEntity> incomeStatementEntities = crudRepository.findAllBySymbolAndPeriod(symbol, period);
     return incomeStatementEntities.stream().map(mapper::entityToDto).collect(Collectors.toList());
   }
 

@@ -16,12 +16,12 @@ public class BalanceSheetStatementRepository {
   private final BalanceSheetStatementMapper mapper;
 
   public List<BalanceSheetStatement> findAllBySymbol(String symbol) {
-    List<BalanceSheetStatementEntity> incomeStatementEntities = crudRepository.findAllBySymbolOrderByDateDesc(symbol);
+    List<BalanceSheetStatementEntity> incomeStatementEntities = crudRepository.findAllBySymbol(symbol);
     return incomeStatementEntities.stream().map(mapper::entityToDto).collect(Collectors.toList());
   }
 
   public List<BalanceSheetStatement> findAllBySymbolAndPeriod(String symbol, String period) {
-    List<BalanceSheetStatementEntity> incomeStatementEntities = crudRepository.findAllBySymbolAndPeriodOrderByDateDesc(symbol, period);
+    List<BalanceSheetStatementEntity> incomeStatementEntities = crudRepository.findAllBySymbolAndPeriod(symbol, period);
     return incomeStatementEntities.stream().map(mapper::entityToDto).collect(Collectors.toList());
   }
 

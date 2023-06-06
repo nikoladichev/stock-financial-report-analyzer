@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BalanceSheetStatementCrudRepository extends JpaRepository<BalanceSheetStatementEntity, String> {
-    List<BalanceSheetStatementEntity> findAllBySymbolAndPeriodOrderByDateDesc(String symbol, String period);
+    List<BalanceSheetStatementEntity> findAllBySymbolAndPeriod(String symbol, String period);
 
-    List<BalanceSheetStatementEntity> findAllBySymbolOrderByDateDesc(String symbol);
+    List<BalanceSheetStatementEntity> findAllBySymbol(String symbol);
 }

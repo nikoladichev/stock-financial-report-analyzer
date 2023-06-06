@@ -4,7 +4,7 @@ import com.nikoladichev.financialreportanalyzer.model.fundamentals.statements.Ba
 import com.nikoladichev.financialreportanalyzer.model.fundamentals.statements.CashFlowStatement;
 import com.nikoladichev.financialreportanalyzer.model.fundamentals.statements.IncomeStatement;
 import com.nikoladichev.financialreportanalyzer.model.fundamentals.statements.Period;
-import com.nikoladichev.financialreportanalyzer.service.FinancialStatementService;
+import com.nikoladichev.financialreportanalyzer.service.StockFundamentalsService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/{symbol}")
 @RequiredArgsConstructor
 public class StatementsController {
-  private final FinancialStatementService service;
+  private final StockFundamentalsService service;
 
   @ResponseStatus(HttpStatus.OK)
   @GetMapping("/income-statement")
