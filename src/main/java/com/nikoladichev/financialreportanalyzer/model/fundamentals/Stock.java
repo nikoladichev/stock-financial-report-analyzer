@@ -1,4 +1,4 @@
-package com.nikoladichev.financialreportanalyzer.integration.fmp;
+package com.nikoladichev.financialreportanalyzer.model.fundamentals;
 
 
 import lombok.Data;

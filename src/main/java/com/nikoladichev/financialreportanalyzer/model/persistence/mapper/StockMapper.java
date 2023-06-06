@@ -1,6 +1,6 @@
 package com.nikoladichev.financialreportanalyzer.model.persistence.mapper;
 
-import com.nikoladichev.financialreportanalyzer.integration.fmp.Stock;
+import com.nikoladichev.financialreportanalyzer.model.fundamentals.Stock;
 import com.nikoladichev.financialreportanalyzer.model.persistence.entity.StockEntity;
 import org.mapstruct.*;
 

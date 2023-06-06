@@ -4,6 +4,8 @@ import com.nikoladichev.financialreportanalyzer.integration.fmp.request.StockScr
 import com.nikoladichev.financialreportanalyzer.integration.fmp.request.helpers.GetRequestHelper;
 import java.net.URI;
 import java.net.URISyntaxException;
+
+import com.nikoladichev.financialreportanalyzer.model.fundamentals.Stock;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;

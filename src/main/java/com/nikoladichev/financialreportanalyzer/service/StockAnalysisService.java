@@ -3,6 +3,7 @@ package com.nikoladichev.financialreportanalyzer.service;
 import com.nikoladichev.financialreportanalyzer.integration.fmp.EnterpriseValuesApiServiceClient;
 import com.nikoladichev.financialreportanalyzer.integration.fmp.RatiosApiServiceClient;
 import com.nikoladichev.financialreportanalyzer.model.common.DateFormatter;
+import com.nikoladichev.financialreportanalyzer.model.fundamentals.HistoricalStockPrice;
 import com.nikoladichev.financialreportanalyzer.model.fundamentals.analysis.FundamentalAnalysis;
 import com.nikoladichev.financialreportanalyzer.model.fundamentals.analysis.FundamentalAnalysisService;
 import com.nikoladichev.financialreportanalyzer.model.fundamentals.analysis.FundamentalData;
@@ -26,32 +27,35 @@ public class StockAnalysisService {
   private final RatiosApiServiceClient ratiosApiServiceClient;
   private final EnterpriseValuesApiServiceClient enterpriseValuesApiServiceClient;
 
-  private final IncomeStatementRepository incomeStatementRepository;
-  private final BalanceSheetStatementRepository balanceSheetStatementRepository;
   private final CashFlowStatementRepository cashFlowStatementRepository;
 
   private final FundamentalAnalysisService fundamentalAnalysisService;
+  private final StockFundamentalsService stockFundamentalsService;
 
   public FundamentalAnalysis executeAnalysis(String symbol) {
+
     Map<String, IncomeStatement> incomeStatements =
-        incomeStatementRepository.findAllBySymbol(symbol).stream()
+        stockFundamentalsService.getIncomeStatements(symbol, Period.ANNUAL, null).stream()
             .collect(Collectors.toMap(IncomeStatement::getDate, Function.identity()));
 
     Map<String, BalanceSheetStatement> balanceSheetStatements =
-        balanceSheetStatementRepository.findAllBySymbol(symbol).stream()
+        stockFundamentalsService.getBalanceSheetStatements(symbol, Period.ANNUAL, null).stream()
             .collect(Collectors.toMap(BalanceSheetStatement::getDate, Function.identity()));
 
     Map<String, CashFlowStatement> cashFlowStatements =
-        cashFlowStatementRepository.findAllBySymbol(symbol).stream()
+        stockFundamentalsService.getCashFlowStatements(symbol, Period.ANNUAL, null).stream()
             .collect(Collectors.toMap(CashFlowStatement::getDate, Function.identity()));
 
     Map<String, Ratios> ratiosByFillingDate =
-        ratiosApiServiceClient.getRatios(symbol, false).stream()
+        stockFundamentalsService.getFinancialRatios(symbol, Period.ANNUAL, null).stream()
             .collect(Collectors.toMap(Ratios::getDate, Function.identity()));
 
     Map<String, EnterpriseValues> enterpriseValuesByFillingDate =
-        enterpriseValuesApiServiceClient.getEnterpriseValues(symbol).stream()
+        stockFundamentalsService.getEnterpriseValues(symbol, null).stream()
             .collect(Collectors.toMap(EnterpriseValues::getDate, Function.identity(), (a, b) -> a));
+
+    HistoricalStockPrice historicalStockPrice =
+        stockFundamentalsService.getHistoricalStockPrice(symbol);
 
     var fundamentalData = new TreeMap<Date, FundamentalData>();
 

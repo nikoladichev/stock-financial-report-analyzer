@@ -1,6 +1,6 @@
 package com.nikoladichev.financialreportanalyzer.controller;
 
-import com.nikoladichev.financialreportanalyzer.integration.fmp.Stock;
+import com.nikoladichev.financialreportanalyzer.model.fundamentals.Stock;
 import com.nikoladichev.financialreportanalyzer.service.StockScreenerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
