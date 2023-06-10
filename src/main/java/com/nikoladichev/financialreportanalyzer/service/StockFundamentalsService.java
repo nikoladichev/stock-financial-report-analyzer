@@ -7,6 +7,7 @@ import com.nikoladichev.financialreportanalyzer.integration.fmp.StatementsApiSer
 import com.nikoladichev.financialreportanalyzer.integration.fmp.request.EnterpriseValuesRequest;
 import com.nikoladichev.financialreportanalyzer.integration.fmp.request.HistoricalStockPriceRequest;
 import com.nikoladichev.financialreportanalyzer.integration.fmp.request.StatementRequest;
+import com.nikoladichev.financialreportanalyzer.model.common.DateFormatter;
 import com.nikoladichev.financialreportanalyzer.model.fundamentals.HistoricalStockPrice;
 import com.nikoladichev.financialreportanalyzer.model.fundamentals.ratios.Ratios;
 import com.nikoladichev.financialreportanalyzer.model.fundamentals.statements.*;
@@ -16,7 +17,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -52,39 +56,41 @@ public class StockFundamentalsService {
     return incomeStatementRepository.saveAll(incomeStatements);
   }
 
-  public List<BalanceSheetStatement> getBalanceSheetStatements(String symbol, Period period, Integer limit) {
-    List<BalanceSheetStatement> existingStatements = balanceSheetStatementRepository.findAllBySymbol(symbol);
+  public List<BalanceSheetStatement> getBalanceSheetStatements(
+      String symbol, Period period, Integer limit) {
+    List<BalanceSheetStatement> existingStatements =
+        balanceSheetStatementRepository.findAllBySymbol(symbol);
     // TODO [STATEMENT_DATE_VALIDATION] - should three months or one year depending on the period
     if (existingStatements != null && !existingStatements.isEmpty()) {
       return existingStatements;
     }
 
     BalanceSheetStatement[] balanceSheetStatements =
-            this.statementsApiServiceClient.getBalanceSheetStatement(
-                    symbol, StatementRequest.builder().period(period).limit(limit).build());
+        this.statementsApiServiceClient.getBalanceSheetStatement(
+            symbol, StatementRequest.builder().period(period).limit(limit).build());
 
     log.info("Received {} balance sheet statements", balanceSheetStatements.length);
 
     return balanceSheetStatementRepository.saveAll(balanceSheetStatements);
   }
 
-
-  public List<CashFlowStatement> getCashFlowStatements(String symbol, Period period, Integer limit) {
-    List<CashFlowStatement> existingStatements = cashFlowStatementRepository.findAllBySymbol(symbol);
+  public List<CashFlowStatement> getCashFlowStatements(
+      String symbol, Period period, Integer limit) {
+    List<CashFlowStatement> existingStatements =
+        cashFlowStatementRepository.findAllBySymbol(symbol);
     // TODO [STATEMENT_DATE_VALIDATION] - should three months or one year depending on the period
     if (existingStatements != null && !existingStatements.isEmpty()) {
       return existingStatements;
     }
 
     CashFlowStatement[] cashFlowStatements =
-            this.statementsApiServiceClient.getCashFlowStatement(
-                    symbol, StatementRequest.builder().period(period).limit(limit).build());
+        this.statementsApiServiceClient.getCashFlowStatement(
+            symbol, StatementRequest.builder().period(period).limit(limit).build());
 
     log.info("Received {} balance sheet statements", cashFlowStatements.length);
 
     return cashFlowStatementRepository.saveAll(cashFlowStatements);
   }
-
 
   public List<Ratios> getFinancialRatios(String symbol, Period period, Integer limit) {
     List<Ratios> ratios = ratiosRepository.findAllBySymbol(symbol);
@@ -100,7 +106,6 @@ public class StockFundamentalsService {
     return ratiosRepository.saveAll(ratios);
   }
 
-
   public List<EnterpriseValues> getEnterpriseValues(String symbol, Integer limit) {
     List<EnterpriseValues> enterpriseValues = enterpriseValuesRepository.findAllBySymbol(symbol);
     // TODO [STATEMENT_DATE_VALIDATION] - should three months or one year depending on the period
@@ -109,8 +114,8 @@ public class StockFundamentalsService {
     }
 
     enterpriseValues =
-            this.enterpriseValuesApiServiceClient.getEnterpriseValues(
-                    symbol, EnterpriseValuesRequest.builder().limit(limit).build());
+        this.enterpriseValuesApiServiceClient.getEnterpriseValues(
+            symbol, EnterpriseValuesRequest.builder().limit(limit).build());
 
     log.info("Received {} enterprise values", enterpriseValues.size());
 
@@ -118,19 +123,23 @@ public class StockFundamentalsService {
   }
 
   public HistoricalStockPrice getHistoricalStockPrice(String symbol) {
-    var historicalStockPrices = historicalStockPriceRepository.findAllBySymbol(symbol);
-    // TODO [STATEMENT_DATE_VALIDATION] - should three months or one year depending on the period
-    if (historicalStockPrices != null) {
-      return historicalStockPrices;
+    var lastDateFilling = historicalStockPriceRepository.findLastDateFilling(symbol);
+    if (lastDateFilling.isPresent()
+        && Objects.equals(lastDateFilling.get(), LocalDate.now().minusDays(1))) {
+      return historicalStockPriceRepository.findAllBySymbol(symbol);
     }
 
-    // TODO Add FROM and TO parameters
-    historicalStockPrices =
-            this.historicalStockPriceApiServiceClient.getHistoricalPrices(
-                    symbol, HistoricalStockPriceRequest.builder().build());
+    var historicalStockPrices =
+        this.historicalStockPriceApiServiceClient.getHistoricalPrices(
+            symbol,
+            HistoricalStockPriceRequest.builder()
+                .from(DateFormatter.format(lastDateFilling.orElse(null)))
+                .build());
 
-    log.info("Received {} enterprise values", historicalStockPrices.getHistorical().size());
+    log.info("Received {} stock prices", historicalStockPrices.getHistorical().size());
 
-    return historicalStockPriceRepository.saveAll(historicalStockPrices);
+    historicalStockPriceRepository.saveAll(historicalStockPrices);
+
+    return historicalStockPriceRepository.findAllBySymbol(symbol);
   }
 }

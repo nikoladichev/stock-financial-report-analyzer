@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -57,7 +58,7 @@ public class StockAnalysisService {
     HistoricalStockPrice historicalStockPrice =
         stockFundamentalsService.getHistoricalStockPrice(symbol);
 
-    var fundamentalData = new TreeMap<Date, FundamentalData>();
+    var fundamentalData = new TreeMap<LocalDate, FundamentalData>();
 
     for (String fillingDate : enterpriseValuesByFillingDate.keySet()) {
       fundamentalData.put(
@@ -72,7 +73,7 @@ public class StockAnalysisService {
               .build());
     }
 
-    fundamentalAnalysisService.init(fundamentalData);
+    fundamentalAnalysisService.init(fundamentalData, historicalStockPrice.getHistorical());
 
     return fundamentalAnalysisService.analyse();
   }

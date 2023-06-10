@@ -6,7 +6,11 @@ import com.nikoladichev.financialreportanalyzer.model.persistence.entity.Histori
 import com.nikoladichev.financialreportanalyzer.model.persistence.entity.RatiosEntity;
 import com.nikoladichev.financialreportanalyzer.model.persistence.mapper.HistoricalStockPriceMapper;
 import com.nikoladichev.financialreportanalyzer.model.persistence.mapper.RatiosMapper;
+
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -21,6 +25,10 @@ public class HistoricalStockPriceRepository {
     var entities = crudRepository.findAllBySymbol(symbol);
 
     return mapper.entityListToDto(entities);
+  }
+
+  public Optional<LocalDate> findLastDateFilling(String symbol) {
+    return crudRepository.findLastDateFilling(symbol);
   }
 
   public HistoricalStockPrice saveAll(HistoricalStockPrice dto) {

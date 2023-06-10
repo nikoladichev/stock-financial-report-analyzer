@@ -3,6 +3,8 @@ package com.nikoladichev.financialreportanalyzer.model.fundamentals;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 import lombok.*;
@@ -46,7 +48,7 @@ public class HistoricalStockPrice {
      * The date of the historical data.
      */
     @Schema(description = "The date of the historical data")
-    private String date;
+    private LocalDate date;
 
     /**
      * The closing price on the given date.

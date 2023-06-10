@@ -3,6 +3,7 @@ package com.nikoladichev.financialreportanalyzer.model.fundamentals.ratios;
 import com.nikoladichev.financialreportanalyzer.model.common.DateFormatter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
@@ -628,7 +629,7 @@ public class Ratios {
    * @return A map object containing instances of the semantic projection inner classes with the
    *     ratio fields, or null if any of the fields are null.
    */
-  public Pair<Date, RatiosGroup> groupRatios() {
+  public Pair<LocalDate, RatiosGroup> groupRatios() {
     if (Objects.isNull(date)
         || Objects.isNull(receivablesTurnover)
         || Objects.isNull(payablesTurnover)
