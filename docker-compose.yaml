@@ -1,0 +1,24 @@
+version: '3.8'
+services:
+  db:
+    image: mariadb
+    container_name: mariadb-local
+    environment:
+      MYSQL_ROOT_PASSWORD: St@R_WaR5
+      MYSQL_DATABASE: financial-data
+      MYSQL_USER: findich
+      MYSQL_PASSWORD: De3p_Sp@c3
+    volumes:
+      # Compose knows how to interpret relative paths;
+      # they are relative to the location of the docker-compose.yml file
+      - ./mariadb:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    working_dir: /home/mariadb
+  findich-api-node:
+    build: .
+#    depends_on:
+#      - mariadb-local
+    ports:
+      - "8080:8080"
+    container_name: findich-api-node

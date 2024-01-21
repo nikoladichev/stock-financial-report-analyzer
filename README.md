@@ -1,2 +1,2 @@
-# stock-financial-report-analyzer
-A simple tool that analyzes a financial report of a publicly traded company and returns the most famous radios that a company uses.
+# Stock Finance Data
+A simple tool that stores and returns stock data like the three statements (annual and quarterly), financial ratios, company info, etc.

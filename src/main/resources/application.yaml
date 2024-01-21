@@ -1,0 +1,40 @@
+spring:
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://localhost:3306/financial-data
+    username: findich
+    password: De3p_Sp@c3
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MariaDBDialect
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+
+dcf:
+  base:
+    uri: https://discountingcashflows.com/api/
+  company-profile:
+    uri: ${dcf.base.uri}/profile/{symbol}
+  income-annual-statement:
+    uri: ${dcf.base.uri}/income-statement/{symbol}
+  income-ltm-statement:
+    uri: ${dcf.base.uri}/income-statement/ltm/{symbol}
+  income-quarterly-statement:
+    uri: ${dcf.base.uri}/income-statement/quarterly/{symbol}
+  balance-sheet-annual-statement:
+    uri: ${dcf.base.uri}/balance-sheet-statement/{symbol}
+  balance-sheet-quarterly-statement:
+    uri: ${dcf.base.uri}/balance-sheet-statement/quarterly/{symbol}
+  cash-flow-annual-statement:
+    uri: ${dcf.base.uri}/cash-flow-statement/{symbol}
+  cash-flow-ltm-statement:
+    uri: ${dcf.base.uri}/cash-flow-statement/ltm/{symbol}
+  cash-flow-quarterly-statement:
+    uri: ${dcf.base.uri}/cash-flow-statement/quarterly/{symbol}
