@@ -3,17 +3,20 @@ package com.nikoladichev.findich.api.service;
 import com.nikoladichev.findich.api.integration.dcf.DisountingCashflowsApiClient;
 import com.nikoladichev.findich.api.integration.dcf.response.Statement;
 import com.nikoladichev.findich.api.model.common.Comparators;
+import com.nikoladichev.findich.api.model.common.Constants;
 import com.nikoladichev.findich.api.model.fundamentals.CompanyProfile;
 import com.nikoladichev.findich.api.model.fundamentals.FinancialData;
 import com.nikoladichev.findich.api.model.fundamentals.StockData;
-import com.nikoladichev.findich.api.model.fundamentals.statements.BalanceSheetStatement;
-import com.nikoladichev.findich.api.model.fundamentals.statements.CashFlowStatement;
-import com.nikoladichev.findich.api.model.fundamentals.statements.IncomeStatement;
-import com.nikoladichev.findich.api.model.fundamentals.statements.Period;
+import com.nikoladichev.findich.api.model.fundamentals.statements.*;
 import com.nikoladichev.findich.api.model.persistence.repository.BalanceSheetStatementRepository;
 import com.nikoladichev.findich.api.model.persistence.repository.CashFlowStatementRepository;
 import com.nikoladichev.findich.api.model.persistence.repository.CompanyProfileRepository;
 import com.nikoladichev.findich.api.model.persistence.repository.IncomeStatementRepository;
+
+import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -48,8 +51,9 @@ public class FundamentalsService {
 
   public List<IncomeStatement> getIncomeStatements(String symbol, Period period) {
     List<IncomeStatement> existingStatements = incomeStatementRepository.findAllBySymbol(symbol);
-    // TODO [STATEMENT_DATE_VALIDATION] - should three months or one year depending on the period
-    if (existingStatements != null && !existingStatements.isEmpty()) {
+    if (existingStatements != null
+        && !existingStatements.isEmpty()
+        && Constants.latestStatementIsInThePastThreeMonths(existingStatements)) {
       return existingStatements;
     }
 
@@ -64,13 +68,30 @@ public class FundamentalsService {
   public List<BalanceSheetStatement> getBalanceSheetStatements(String symbol, Period period) {
     List<BalanceSheetStatement> existingStatements =
         balanceSheetStatementRepository.findAllBySymbol(symbol);
-    // TODO [STATEMENT_DATE_VALIDATION] - should three months or one year depending on the period
-    if (existingStatements != null && !existingStatements.isEmpty()) {
+    if (existingStatements != null
+        && !existingStatements.isEmpty()
+        && Constants.latestStatementIsInThePastThreeMonths(existingStatements)) {
       return existingStatements;
     }
 
-    Statement<List<BalanceSheetStatement>> balanceSheetStatements =
-        this.disountingCashflowsApiClient.getBalanceSheetStatement(symbol, period);
+    Statement<List<BalanceSheetStatement>> balanceSheetStatements = null;
+    if (Period.LTM.equals(period)) {
+      balanceSheetStatements =
+          this.disountingCashflowsApiClient.getBalanceSheetStatement(symbol, Period.QUARTERLY);
+      var statement =
+          balanceSheetStatements.getReport().stream()
+              .max(Comparators.statementDateComparator)
+              .get();
+
+      balanceSheetStatements =
+          new Statement<>(
+              balanceSheetStatements.getOriginalCurrency(),
+              balanceSheetStatements.getConvertedCurrency(),
+              List.of(statement));
+    } else {
+      balanceSheetStatements =
+          this.disountingCashflowsApiClient.getBalanceSheetStatement(symbol, period);
+    }
 
     log.info("Received {} balance sheet statements", balanceSheetStatements.getReport().size());
 
@@ -80,8 +101,9 @@ public class FundamentalsService {
   public List<CashFlowStatement> getCashFlowStatements(String symbol, Period period) {
     List<CashFlowStatement> existingStatements =
         cashFlowStatementRepository.findAllBySymbol(symbol);
-    // TODO [STATEMENT_DATE_VALIDATION] - should three months or one year depending on the period
-    if (existingStatements != null && !existingStatements.isEmpty()) {
+    if (existingStatements != null
+        && !existingStatements.isEmpty()
+        && Constants.latestStatementIsInThePastThreeMonths(existingStatements)) {
       return existingStatements;
     }
 
@@ -110,15 +132,16 @@ public class FundamentalsService {
     var annualIncomeStatements =
         getIncomeStatements(symbol, Period.ANNUAL).stream()
             .collect(Collectors.toMap(IncomeStatement::getCalendarYear, Function.identity()));
-    var ttmIncomeStatements = getIncomeStatements(symbol, Period.ANNUAL).stream().findFirst().orElse(null);
+    var ttmIncomeStatements =
+        getIncomeStatements(symbol, Period.ANNUAL).stream().findFirst().orElse(null);
 
     var annualBalanceSheetStatements =
         getBalanceSheetStatements(symbol, Period.ANNUAL).stream()
             .collect(Collectors.toMap(BalanceSheetStatement::getCalendarYear, Function.identity()));
     var ttmBalanceSheetStatements =
         getBalanceSheetStatements(symbol, Period.QUARTERLY).stream()
-                .max((a,b) -> Comparators.financialDateComparator(a.getDate(), b.getDate()))
-                .orElse(null);
+            .max(Comparators.statementDateComparator)
+            .orElse(null);
 
     var annualCashFlowStatements =
         getCashFlowStatements(symbol, Period.ANNUAL).stream()
@@ -126,7 +149,8 @@ public class FundamentalsService {
     var ttmCashFlowStatements =
         getCashFlowStatements(symbol, Period.ANNUAL).stream().findFirst().orElse(null);
 
-    Map<String, FinancialData> financialData = new TreeMap<>(Comparators.financialYearAndTtmDateComparator);
+    Map<String, FinancialData> financialData =
+        new TreeMap<>(Comparators.financialYearAndTtmDateComparator);
     for (String year : annualCashFlowStatements.keySet()) {
       financialData.put(
           year,

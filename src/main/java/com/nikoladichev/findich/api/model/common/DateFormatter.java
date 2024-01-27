@@ -11,6 +11,7 @@ public class DateFormatter {
   public static final DateTimeFormatter LOCAL_DATE_FORMATTER = DateTimeFormatter.ofPattern(Constants.DATE_FORMAT);
 
   public static LocalDate parse(String date) {
+
     return LocalDate.parse(date);
   }
 
