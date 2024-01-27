@@ -7,16 +7,12 @@ import com.nikoladichev.findich.api.model.common.Constants;
 import com.nikoladichev.findich.api.model.fundamentals.CompanyProfile;
 import com.nikoladichev.findich.api.model.fundamentals.FinancialData;
 import com.nikoladichev.findich.api.model.fundamentals.StockData;
+import com.nikoladichev.findich.api.model.fundamentals.Treasury;
 import com.nikoladichev.findich.api.model.fundamentals.statements.*;
 import com.nikoladichev.findich.api.model.persistence.repository.BalanceSheetStatementRepository;
 import com.nikoladichev.findich.api.model.persistence.repository.CashFlowStatementRepository;
 import com.nikoladichev.findich.api.model.persistence.repository.CompanyProfileRepository;
 import com.nikoladichev.findich.api.model.persistence.repository.IncomeStatementRepository;
-
-import java.text.ParseException;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -172,6 +168,12 @@ public class FundamentalsService {
         .companyProfile(getCompanyProfile(symbol))
         .financialData(financialData)
         .build();
+  }
+
+  public Treasury getTreasury() {
+    // TODO - save in db
+
+    return disountingCashflowsApiClient.getTreasury();
   }
 
   //

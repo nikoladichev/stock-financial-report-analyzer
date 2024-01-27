@@ -4,22 +4,24 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Data
 @Entity
 @NoArgsConstructor
 public class CompanyProfileEntity {
     private @Id String symbol;
     private String date;
-    @Column(columnDefinition = "DECIMAL")
+    @Column(columnDefinition = "DECIMAL(20,2)")
     private double price;
-    @Column(columnDefinition = "DECIMAL")
+    @Column(columnDefinition = "DECIMAL(20,2)")
     private double beta;
     private Long volAvg;
-    @Column(columnDefinition = "DECIMAL")
-    private double mktCap;
-    @Column(columnDefinition = "DECIMAL")
+    @Column(columnDefinition = "DECIMAL(20,2)")
+    private BigDecimal mktCap;
+    @Column(columnDefinition = "DECIMAL(20, 2)")
     private double lastDiv;
-    @Column(columnDefinition = "DECIMAL")
+    @Column(columnDefinition = "DECIMAL(20,2)")
     private double changes;
     private String companyName;
     private String currency;
@@ -41,9 +43,9 @@ public class CompanyProfileEntity {
     private String city;
     private String state;
     private String zip;
-    @Column(columnDefinition = "DECIMAL")
+    @Column(columnDefinition = "DECIMAL(20,2)")
     private double dcfDiff;
-    @Column(columnDefinition = "DECIMAL")
+    @Column(columnDefinition = "DECIMAL(20,2)")
     private double dcf;
     private String image;
     private String ipoDate;
@@ -52,9 +54,9 @@ public class CompanyProfileEntity {
     private boolean isActivelyTrading;
     private boolean isAdr;
     private boolean isFund;
-    @Column(columnDefinition = "DECIMAL")
+    @Column(columnDefinition = "DECIMAL(20,2)")
     private double rangeMin;
-    @Column(columnDefinition = "DECIMAL", nullable = false)
+    @Column(columnDefinition = "DECIMAL(20,2)", nullable = false)
     private double rangeMax;
     private String reportedCurrency;
 }

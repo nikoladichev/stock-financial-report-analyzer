@@ -2,6 +2,7 @@ package com.nikoladichev.findich.api.integration.dcf;
 
 import com.nikoladichev.findich.api.integration.dcf.response.Statement;
 import com.nikoladichev.findich.api.model.fundamentals.CompanyProfile;
+import com.nikoladichev.findich.api.model.fundamentals.Treasury;
 import com.nikoladichev.findich.api.model.fundamentals.statements.BalanceSheetStatement;
 import com.nikoladichev.findich.api.model.fundamentals.statements.CashFlowStatement;
 import com.nikoladichev.findich.api.model.fundamentals.statements.IncomeStatement;
@@ -47,10 +48,17 @@ public class DisountingCashflowsApiClient {
   @Value("${dcf.company-profile.uri}")
   private String companyProfileUri;
 
+  @Value("${dcf.treasury.uri}")
+  private String treasuryUri;
+
   private final RestTemplate restTemplate;
 
   public DisountingCashflowsApiClient(RestTemplateBuilder restTemplateBuilder) {
     this.restTemplate = restTemplateBuilder.build();
+  }
+
+  public Treasury getTreasury() {
+    return restTemplate.exchange(treasuryUri, HttpMethod.GET, HttpEntity.EMPTY, Treasury.class).getBody();
   }
 
   public Statement<List<CompanyProfile>> getCompanyProfile(String symbol) {

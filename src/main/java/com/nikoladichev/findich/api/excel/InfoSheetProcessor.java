@@ -2,6 +2,7 @@ package com.nikoladichev.findich.api.excel;
 
 import com.nikoladichev.findich.api.model.common.DateFormatter;
 import com.nikoladichev.findich.api.model.fundamentals.CompanyProfile;
+import com.nikoladichev.findich.api.model.fundamentals.Treasury;
 import com.nikoladichev.findich.api.model.fundamentals.statements.IncomeStatement;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Cell;
@@ -46,12 +47,12 @@ public class InfoSheetProcessor {
     private static final int MODEL_ASSUMPTIONS = 2;
   }
 
-  public void process(CompanyProfile companyProfile, Workbook workbook) {
+  public void process(CompanyProfile companyProfile, Treasury treasury, Workbook workbook) {
     var sheet = workbook.getSheet("INFO");
-    processData(companyProfile, sheet);
+    processData(companyProfile, treasury, sheet);
   }
 
-  private void processData(CompanyProfile info,  Sheet sheet) {
+  private void processData(CompanyProfile info, Treasury treasury, Sheet sheet) {
     // Info Section
     getCell(sheet, RowConstants.SYMBOL, ColConstants.COMPANY_INFO).setCellValue(info.getSymbol());
     getCell(sheet, RowConstants.COMPANY_NAME, ColConstants.COMPANY_INFO)
@@ -79,12 +80,11 @@ public class InfoSheetProcessor {
     getCell(sheet, RowConstants.PRICE, ColConstants.MODEL_ASSUMPTIONS)
             .setCellValue(info.getPrice());
     getCell(sheet, RowConstants.MARKET_CAP, ColConstants.MODEL_ASSUMPTIONS)
-            .setCellValue(info.getMktCap());
+            .setCellValue(info.getMktCap().doubleValue());
     getCell(sheet, RowConstants.BETA, ColConstants.MODEL_ASSUMPTIONS)
             .setCellValue(info.getBeta());
     getCell(sheet, RowConstants.RISK_FREE_RATE, ColConstants.MODEL_ASSUMPTIONS)
-            .setCellValue(info.getBeta());
-
+            .setCellValue(treasury.getYear10());
   }
 
   protected static Cell getCell(Sheet sheet, int row, int col) {

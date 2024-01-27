@@ -66,7 +66,8 @@ public class ExcelManipulationService {
 
   private void fillInfoSheetData(String symbol, Workbook workbook) {
     var stockData = fundamentalsService.getStockData(symbol);
-    infoSheetProcessor.process(stockData.getCompanyProfile(), workbook);
+    var treasury = fundamentalsService.getTreasury();
+    infoSheetProcessor.process(stockData.getCompanyProfile(), treasury, workbook);
   }
 
   private void fillIncomeStatementData(String symbol, Workbook workbook) {

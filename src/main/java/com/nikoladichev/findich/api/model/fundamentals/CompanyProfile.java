@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -12,7 +14,7 @@ public class CompanyProfile {
     private double price;
     private double beta;
     private long volAvg;
-    private double mktCap;
+    private BigDecimal mktCap;
     private double lastDiv;
     private String range;
     private double changes;
