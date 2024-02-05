@@ -40,3 +40,7 @@ dcf:
     uri: ${dcf.base.uri}/cash-flow-statement/quarterly/{symbol}
   treasury:
     uri: ${dcf.base.uri}/treasury
+
+yahoo-finance:
+  analysis:
+    uri: http://localhost:9090/{symbol}/analysis

@@ -22,3 +22,8 @@ services:
     ports:
       - "8080:8080"
     container_name: findich-api-node
+  findich-yf-scraper-node:
+    image: yahoo-finance-scraper
+    ports:
+      - "9090:9090"
+    container_name: findich-yf-scraper-node
