@@ -1,9 +1,6 @@
 package com.nikoladichev.findich.api.service;
 
-import com.nikoladichev.findich.api.excel.BalanceSheetStatementSheetProcessor;
-import com.nikoladichev.findich.api.excel.CashFlowStatementSheetProcessor;
-import com.nikoladichev.findich.api.excel.IncomeStatementSheetProcessor;
-import com.nikoladichev.findich.api.excel.InfoSheetProcessor;
+import com.nikoladichev.findich.api.excel.*;
 import com.nikoladichev.findich.api.model.fundamentals.statements.BalanceSheetStatement;
 import com.nikoladichev.findich.api.model.fundamentals.statements.CashFlowStatement;
 import com.nikoladichev.findich.api.model.fundamentals.statements.IncomeStatement;
@@ -34,6 +31,7 @@ public class ExcelManipulationService {
   private final IncomeStatementSheetProcessor incomeStatementSheetProcessor;
   private final BalanceSheetStatementSheetProcessor balanceSheetStatementSheetProcessor;
   private final CashFlowStatementSheetProcessor cashFlowStatementSheetProcessor;
+  private final AnalysisSheetProcessor analysisSheetProcessor;
 
   @Transactional
   public ByteArrayInputStream fillTemplateWithData(String symbol) {
@@ -44,6 +42,7 @@ public class ExcelManipulationService {
       var formulaEvaluator = new XSSFFormulaEvaluator(workbook);
       formulaEvaluator.clearAllCachedResultValues();
 
+      fillAnalysisSheetData(symbol, workbook);
       fillInfoSheetData(symbol, workbook);
       fillBalanceSheetData(symbol, workbook);
       fillCashFlowData(symbol, workbook);
@@ -89,5 +88,10 @@ public class ExcelManipulationService {
     statements.addAll(fundamentalsService.getBalanceSheetStatements(symbol, Period.ANNUAL));
     statements.addAll(fundamentalsService.getBalanceSheetStatements(symbol, Period.LTM));
     balanceSheetStatementSheetProcessor.process(workbook, statements);
+  }
+
+  private void fillAnalysisSheetData(String symbol, Workbook workbook) {
+    var analysis = fundamentalsService.getAnalysis(symbol);
+    analysisSheetProcessor.process(workbook, analysis);
   }
 }

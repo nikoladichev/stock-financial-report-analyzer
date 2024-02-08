@@ -2,6 +2,8 @@ package com.nikoladichev.findich.api.service;
 
 import com.nikoladichev.findich.api.integration.dcf.DisountingCashflowsApiClient;
 import com.nikoladichev.findich.api.integration.dcf.response.Statement;
+import com.nikoladichev.findich.api.integration.yahoofinance.FindichYahooFinanceApiClient;
+import com.nikoladichev.findich.api.integration.yahoofinance.response.Analysis;
 import com.nikoladichev.findich.api.model.common.Comparators;
 import com.nikoladichev.findich.api.model.common.Constants;
 import com.nikoladichev.findich.api.model.fundamentals.CompanyProfile;
@@ -34,6 +36,7 @@ public class FundamentalsService {
   private final CashFlowStatementRepository cashFlowStatementRepository;
   private final CompanyProfileRepository companyProfileRepository;
   private final DisountingCashflowsApiClient disountingCashflowsApiClient;
+  private final FindichYahooFinanceApiClient yahooFinanceApiClient;
 
   private static int compare(String a, String b) {
     if (a.equals("TTM")) {
@@ -124,6 +127,16 @@ public class FundamentalsService {
     return companyProfileRepository.save(companyProfile.getReport().get(0));
   }
 
+  public Analysis getAnalysis(String symbol) {
+    var start = System.currentTimeMillis();
+    var analysis = this.yahooFinanceApiClient.getAnalysis(symbol);
+
+    log.info("Received {} analysis in {} ms", symbol, (System.currentTimeMillis() - start));
+
+    return analysis;
+  }
+
+
   public StockData getStockData(String symbol) {
     var annualIncomeStatements =
         getIncomeStatements(symbol, Period.ANNUAL).stream()
@@ -164,9 +177,12 @@ public class FundamentalsService {
             .cashFlowStatement(ttmCashFlowStatements)
             .build());
 
+//    Analysis analysis = yahooFinanceApiClient.getAnalysis(symbol);
+
     return StockData.builder()
         .companyProfile(getCompanyProfile(symbol))
         .financialData(financialData)
+//        .analysis(analysis)
         .build();
   }
 
