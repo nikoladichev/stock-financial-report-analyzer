@@ -38,7 +38,9 @@ public class InfoSheetProcessor {
     private static final int PRICE = 14;
     private static final int MARKET_CAP = 15;
     private static final int BETA = 16;
-    private static final int RISK_FREE_RATE = 17;
+    private static final int SHARES_OUTSTANDING = 17;
+    private static final int PRICE_EARNINGS = 18;
+    private static final int RISK_FREE_RATE = 19;
   }
 
   private static class ColConstants {
