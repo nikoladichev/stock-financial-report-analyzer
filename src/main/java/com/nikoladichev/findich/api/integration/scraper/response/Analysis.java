@@ -1,4 +1,4 @@
-package com.nikoladichev.findich.api.integration.yahoofinance.response;
+package com.nikoladichev.findich.api.integration.scraper.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

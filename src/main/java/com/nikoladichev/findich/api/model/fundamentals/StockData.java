@@ -2,7 +2,7 @@ package com.nikoladichev.findich.api.model.fundamentals;
 
 import java.util.Map;
 
-import com.nikoladichev.findich.api.integration.yahoofinance.response.Analysis;
+import com.nikoladichev.findich.api.integration.scraper.response.Analysis;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

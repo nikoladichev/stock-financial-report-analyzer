@@ -41,6 +41,10 @@ dcf:
   treasury:
     uri: ${dcf.base.uri}/treasury
 
-yahoo-finance:
+scraper-api:
+  base:
+    uri: http://localhost:9090/{symbol}
   analysis:
-    uri: http://localhost:9090/{symbol}/analysis
+    uri: ${scraper-api.base.uri}/analysis
+  revenue-build:
+    uri: ${scraper-api.base.uri}/revenue-build

@@ -1,6 +1,6 @@
 package com.nikoladichev.findich.api.excel;
 
-import com.nikoladichev.findich.api.integration.yahoofinance.response.Analysis;
+import com.nikoladichev.findich.api.integration.scraper.response.Analysis;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;

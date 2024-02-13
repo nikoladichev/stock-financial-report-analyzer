@@ -2,8 +2,9 @@ package com.nikoladichev.findich.api.service;
 
 import com.nikoladichev.findich.api.integration.dcf.DisountingCashflowsApiClient;
 import com.nikoladichev.findich.api.integration.dcf.response.Statement;
-import com.nikoladichev.findich.api.integration.yahoofinance.FindichYahooFinanceApiClient;
-import com.nikoladichev.findich.api.integration.yahoofinance.response.Analysis;
+import com.nikoladichev.findich.api.integration.scraper.FindichScraperApiClient;
+import com.nikoladichev.findich.api.integration.scraper.response.Analysis;
+import com.nikoladichev.findich.api.integration.scraper.response.RevenueBuild;
 import com.nikoladichev.findich.api.model.common.Comparators;
 import com.nikoladichev.findich.api.model.common.Constants;
 import com.nikoladichev.findich.api.model.fundamentals.CompanyProfile;
@@ -36,7 +37,7 @@ public class FundamentalsService {
   private final CashFlowStatementRepository cashFlowStatementRepository;
   private final CompanyProfileRepository companyProfileRepository;
   private final DisountingCashflowsApiClient disountingCashflowsApiClient;
-  private final FindichYahooFinanceApiClient yahooFinanceApiClient;
+  private final FindichScraperApiClient yahooFinanceApiClient;
 
   private static int compare(String a, String b) {
     if (a.equals("TTM")) {
@@ -134,6 +135,15 @@ public class FundamentalsService {
     log.info("Received {} analysis in {} ms", symbol, (System.currentTimeMillis() - start));
 
     return analysis;
+  }
+
+  public RevenueBuild getRevenueBuild(String symbol) {
+    var start = System.currentTimeMillis();
+    var revenueBuild = this.yahooFinanceApiClient.getRevenueBuild(symbol);
+
+    log.info("Received {} revenue build in {} ms", symbol, (System.currentTimeMillis() - start));
+
+    return revenueBuild;
   }
 
 

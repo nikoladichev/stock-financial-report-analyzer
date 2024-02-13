@@ -42,6 +42,7 @@ public class ExcelManipulationService {
       var formulaEvaluator = new XSSFFormulaEvaluator(workbook);
       formulaEvaluator.clearAllCachedResultValues();
 
+      fillRevenueBuildSheetData(symbol, workbook);
       fillAnalysisSheetData(symbol, workbook);
       fillInfoSheetData(symbol, workbook);
       fillBalanceSheetData(symbol, workbook);
@@ -93,5 +94,12 @@ public class ExcelManipulationService {
   private void fillAnalysisSheetData(String symbol, Workbook workbook) {
     var analysis = fundamentalsService.getAnalysis(symbol);
     analysisSheetProcessor.process(workbook, analysis);
+  }
+
+  private void fillRevenueBuildSheetData(String symbol, Workbook workbook) {
+    var revenueBuild = fundamentalsService.getRevenueBuild(symbol);
+
+    System.out.println(
+        "RevenueBuild sheet processor is not ready. RevenueBuild: " + revenueBuild.toString());
   }
 }
