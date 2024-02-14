@@ -7,7 +7,7 @@ import com.nikoladichev.findich.api.model.fundamentals.statements.CashFlowStatem
 import com.nikoladichev.findich.api.model.fundamentals.statements.IncomeStatement;
 import com.nikoladichev.findich.api.model.fundamentals.statements.Period;
 import com.nikoladichev.findich.api.service.FundamentalsService;
-import java.util.List;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +32,7 @@ public class StatementsController {
 
   @ResponseStatus(HttpStatus.OK)
   @GetMapping("/statements/income")
-  public List<IncomeStatement> incomeStatements(
+  public Set<IncomeStatement> incomeStatements(
       @PathVariable String symbol,
       @RequestParam(required = false, defaultValue = "ANNUAL") Period period) {
     return service.getIncomeStatements(symbol, period);
@@ -40,7 +40,7 @@ public class StatementsController {
 
   @ResponseStatus(HttpStatus.OK)
   @GetMapping("/statements/balance-sheet")
-  public List<BalanceSheetStatement> balanceSheetStatements(
+  public Set<BalanceSheetStatement> balanceSheetStatements(
           @PathVariable String symbol,
           @RequestParam(required = false, defaultValue = "ANNUAL") Period period) {
     return service.getBalanceSheetStatements(symbol, period);
@@ -48,7 +48,7 @@ public class StatementsController {
 
   @ResponseStatus(HttpStatus.OK)
   @GetMapping("/statements/cash-flow")
-  public List<CashFlowStatement> cashFlowStatements(
+  public Set<CashFlowStatement> cashFlowStatements(
       @PathVariable String symbol,
       @RequestParam(required = false, defaultValue = "ANNUAL") Period period) {
     return service.getCashFlowStatements(symbol, period);

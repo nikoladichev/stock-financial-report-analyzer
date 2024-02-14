@@ -9,6 +9,8 @@ import com.nikoladichev.findich.api.model.fundamentals.statements.IncomeStatemen
 import com.nikoladichev.findich.api.model.fundamentals.statements.Period;
 import java.net.URI;
 import java.util.List;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
@@ -69,7 +71,7 @@ public class DisountingCashflowsApiClient {
         .getBody();
   }
 
-  public Statement<List<IncomeStatement>> getIncomeStatement(String symbol, Period period) {
+  public Statement<Set<IncomeStatement>> getIncomeStatement(String symbol, Period period) {
     return getStatement(
         symbol,
         period,
@@ -80,7 +82,7 @@ public class DisountingCashflowsApiClient {
         new ParameterizedTypeReference<>() {});
   }
 
-  public Statement<List<BalanceSheetStatement>> getBalanceSheetStatement(
+  public Statement<Set<BalanceSheetStatement>> getBalanceSheetStatement(
       String symbol, Period period) {
     return getStatement(
         symbol,
@@ -92,7 +94,7 @@ public class DisountingCashflowsApiClient {
         new ParameterizedTypeReference<>() {});
   }
 
-  public Statement<List<CashFlowStatement>> getCashFlowStatement(String symbol, Period period) {
+  public Statement<Set<CashFlowStatement>> getCashFlowStatement(String symbol, Period period) {
     return getStatement(
         symbol,
         period,
@@ -103,14 +105,14 @@ public class DisountingCashflowsApiClient {
         new ParameterizedTypeReference<>() {});
   }
 
-  private <T> Statement<List<T>> getStatement(
+  private <T> Statement<Set<T>> getStatement(
       String symbol,
       Period period,
       String annualStatementUri,
       String quarterlyStatementUri,
       String ltmStatementUri,
       ParameterizedTypeReference<Statement<T>> singleRef,
-      ParameterizedTypeReference<Statement<List<T>>> listRef) {
+      ParameterizedTypeReference<Statement<Set<T>>> listRef) {
 
     switch (period) {
       case ANNUAL -> {
@@ -123,7 +125,7 @@ public class DisountingCashflowsApiClient {
         var resp = executeStatementRequest(ltmStatementUri, symbol, singleRef).getBody();
         assert resp != null;
         return new Statement<>(
-            resp.getOriginalCurrency(), resp.getConvertedCurrency(), List.of(resp.getReport()));
+            resp.getOriginalCurrency(), resp.getConvertedCurrency(), Set.of(resp.getReport()));
       }
     }
 
@@ -138,7 +140,7 @@ public class DisountingCashflowsApiClient {
     return restTemplate.exchange(uri, HttpMethod.GET, HttpEntity.EMPTY, clazz);
   }
 
-  protected <T> ParameterizedTypeReference<Statement<List<T>>> getParametrizedType() {
+  protected <T> ParameterizedTypeReference<Statement<Set<T>>> getParametrizedType() {
     return new ParameterizedTypeReference<>() {};
   }
 }

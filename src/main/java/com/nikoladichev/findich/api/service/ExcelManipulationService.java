@@ -7,6 +7,8 @@ import com.nikoladichev.findich.api.model.fundamentals.statements.IncomeStatemen
 import com.nikoladichev.findich.api.model.fundamentals.statements.Period;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashSet;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -71,21 +73,21 @@ public class ExcelManipulationService {
   }
 
   private void fillIncomeStatementData(String symbol, Workbook workbook) {
-    var statements = new ArrayList<IncomeStatement>();
+    var statements = new HashSet<IncomeStatement>();
     statements.addAll(fundamentalsService.getIncomeStatements(symbol, Period.ANNUAL));
     statements.addAll(fundamentalsService.getIncomeStatements(symbol, Period.LTM));
     incomeStatementSheetProcessor.process(workbook, statements);
   }
 
   private void fillCashFlowData(String symbol, Workbook workbook) {
-    var statements = new ArrayList<CashFlowStatement>();
+    var statements = new HashSet<CashFlowStatement>();
     statements.addAll(fundamentalsService.getCashFlowStatements(symbol, Period.ANNUAL));
     statements.addAll(fundamentalsService.getCashFlowStatements(symbol, Period.LTM));
     cashFlowStatementSheetProcessor.process(workbook, statements);
   }
 
   private void fillBalanceSheetData(String symbol, Workbook workbook) {
-    var statements = new ArrayList<BalanceSheetStatement>();
+    var statements = new HashSet<BalanceSheetStatement>();
     statements.addAll(fundamentalsService.getBalanceSheetStatements(symbol, Period.ANNUAL));
     statements.addAll(fundamentalsService.getBalanceSheetStatements(symbol, Period.LTM));
     balanceSheetStatementSheetProcessor.process(workbook, statements);

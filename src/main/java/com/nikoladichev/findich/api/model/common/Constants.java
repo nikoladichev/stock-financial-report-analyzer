@@ -5,6 +5,7 @@ import static com.nikoladichev.findich.api.model.common.Comparators.statementDat
 import com.nikoladichev.findich.api.model.fundamentals.statements.FinancialStatement;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 public interface Constants {
   String DATE_FORMAT = "yyyy-MM-dd";
@@ -12,7 +13,7 @@ public interface Constants {
   int LAST_10_YEARS_PLUS_LTM = 11;
 
   // TODO - evaluate if we must check filling date instead
-  static boolean latestStatementIsInThePastThreeMonths(List<? extends FinancialStatement> statements) {
+  static boolean latestStatementIsInThePastThreeMonths(Set<? extends FinancialStatement> statements) {
     var mostRecentDate = statements.stream().max(statementDateComparator).orElse(null);
 
     if (mostRecentDate == null) {

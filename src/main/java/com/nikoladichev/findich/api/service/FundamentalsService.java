@@ -16,8 +16,8 @@ import com.nikoladichev.findich.api.model.persistence.repository.BalanceSheetSta
 import com.nikoladichev.findich.api.model.persistence.repository.CashFlowStatementRepository;
 import com.nikoladichev.findich.api.model.persistence.repository.CompanyProfileRepository;
 import com.nikoladichev.findich.api.model.persistence.repository.IncomeStatementRepository;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -49,15 +49,15 @@ public class FundamentalsService {
     }
   }
 
-  public List<IncomeStatement> getIncomeStatements(String symbol, Period period) {
-    List<IncomeStatement> existingStatements = incomeStatementRepository.findAllBySymbol(symbol);
+  public Set<IncomeStatement> getIncomeStatements(String symbol, Period period) {
+    Set<IncomeStatement> existingStatements = incomeStatementRepository.findAllBySymbol(symbol);
     if (existingStatements != null
         && !existingStatements.isEmpty()
         && Constants.latestStatementIsInThePastThreeMonths(existingStatements)) {
       return existingStatements;
     }
 
-    Statement<List<IncomeStatement>> incomeStatements =
+    Statement<Set<IncomeStatement>> incomeStatements =
         this.disountingCashflowsApiClient.getIncomeStatement(symbol, period);
 
     log.info("Received {} income statements", incomeStatements.getReport().size());
@@ -65,8 +65,8 @@ public class FundamentalsService {
     return incomeStatementRepository.saveAll(incomeStatements);
   }
 
-  public List<BalanceSheetStatement> getBalanceSheetStatements(String symbol, Period period) {
-    List<BalanceSheetStatement> existingStatements =
+  public Set<BalanceSheetStatement> getBalanceSheetStatements(String symbol, Period period) {
+    Set<BalanceSheetStatement> existingStatements =
         balanceSheetStatementRepository.findAllBySymbol(symbol);
     if (existingStatements != null
         && !existingStatements.isEmpty()
@@ -74,7 +74,7 @@ public class FundamentalsService {
       return existingStatements;
     }
 
-    Statement<List<BalanceSheetStatement>> balanceSheetStatements = null;
+    Statement<Set<BalanceSheetStatement>> balanceSheetStatements = null;
     if (Period.LTM.equals(period)) {
       balanceSheetStatements =
           this.disountingCashflowsApiClient.getBalanceSheetStatement(symbol, Period.QUARTERLY);
@@ -87,7 +87,7 @@ public class FundamentalsService {
           new Statement<>(
               balanceSheetStatements.getOriginalCurrency(),
               balanceSheetStatements.getConvertedCurrency(),
-              List.of(statement));
+              Set.of(statement));
     } else {
       balanceSheetStatements =
           this.disountingCashflowsApiClient.getBalanceSheetStatement(symbol, period);
@@ -98,8 +98,8 @@ public class FundamentalsService {
     return balanceSheetStatementRepository.saveAll(balanceSheetStatements);
   }
 
-  public List<CashFlowStatement> getCashFlowStatements(String symbol, Period period) {
-    List<CashFlowStatement> existingStatements =
+  public Set<CashFlowStatement> getCashFlowStatements(String symbol, Period period) {
+    Set<CashFlowStatement> existingStatements =
         cashFlowStatementRepository.findAllBySymbol(symbol);
     if (existingStatements != null
         && !existingStatements.isEmpty()
@@ -107,7 +107,7 @@ public class FundamentalsService {
       return existingStatements;
     }
 
-    Statement<List<CashFlowStatement>> cashFlowStatements =
+    Statement<Set<CashFlowStatement>> cashFlowStatements =
         this.disountingCashflowsApiClient.getCashFlowStatement(symbol, period);
 
     log.info("Received {} balance sheet statements", cashFlowStatements.getReport().size());

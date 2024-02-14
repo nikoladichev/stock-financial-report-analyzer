@@ -6,6 +6,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
+import java.util.Collection;
 import java.util.List;
 
 import static com.nikoladichev.findich.api.model.common.Comparators.statementDateComparator;
@@ -19,7 +20,7 @@ public abstract class SheetProcessor<T extends FinancialStatement> {
 
   protected abstract void processData(T source, Sheet sheet, int col);
 
-  public void process(Workbook workbook, List<T> data) {
+  public void process(Workbook workbook, Collection<T> data) {
     var sheet = getSheet(workbook);
 
     var sortedData = data.stream().sorted(statementDateComparator).toList();
