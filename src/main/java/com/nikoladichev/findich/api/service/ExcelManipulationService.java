@@ -29,11 +29,13 @@ public class ExcelManipulationService {
   private Resource templateResource;
 
   private final FundamentalsService fundamentalsService;
+  private final CompanyPeersService companyPeersService;
   private final InfoSheetProcessor infoSheetProcessor;
   private final IncomeStatementSheetProcessor incomeStatementSheetProcessor;
   private final BalanceSheetStatementSheetProcessor balanceSheetStatementSheetProcessor;
   private final CashFlowStatementSheetProcessor cashFlowStatementSheetProcessor;
   private final AnalysisSheetProcessor analysisSheetProcessor;
+  private final CompetitorsSheetProcessor competitorsSheetProcessor;
 
   @Transactional
   public ByteArrayInputStream fillTemplateWithData(String symbol) {
@@ -44,12 +46,13 @@ public class ExcelManipulationService {
       var formulaEvaluator = new XSSFFormulaEvaluator(workbook);
       formulaEvaluator.clearAllCachedResultValues();
 
-      fillRevenueBuildSheetData(symbol, workbook);
-      fillAnalysisSheetData(symbol, workbook);
-      fillInfoSheetData(symbol, workbook);
-      fillBalanceSheetData(symbol, workbook);
-      fillCashFlowData(symbol, workbook);
-      fillIncomeStatementData(symbol, workbook);
+      fillCompetitorsSheetData(symbol, workbook);
+//      fillRevenueBuildSheetData(symbol, workbook);
+//      fillAnalysisSheetData(symbol, workbook);
+//      fillInfoSheetData(symbol, workbook);
+//      fillBalanceSheetData(symbol, workbook);
+//      fillCashFlowData(symbol, workbook);
+//      fillIncomeStatementData(symbol, workbook);
 
       // refresh all formulas
       XSSFFormulaEvaluator.evaluateAllFormulaCells(workbook);
@@ -103,5 +106,11 @@ public class ExcelManipulationService {
 
     System.out.println(
         "RevenueBuild sheet processor is not ready. RevenueBuild: " + revenueBuild.toString());
+  }
+
+  private void fillCompetitorsSheetData(String symbol, Workbook workbook) {
+    var comparisonData = companyPeersService.getCompanyPeersData(symbol);
+
+    competitorsSheetProcessor.process(workbook, comparisonData);
   }
 }

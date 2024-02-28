@@ -146,7 +146,6 @@ public class FundamentalsService {
     return revenueBuild;
   }
 
-
   public StockData getStockData(String symbol) {
     var annualIncomeStatements =
         getIncomeStatements(symbol, Period.ANNUAL).stream()

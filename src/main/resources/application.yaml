@@ -6,7 +6,7 @@ spring:
     password: De3p_Sp@c3
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MariaDBDialect
